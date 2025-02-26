@@ -1,7 +1,15 @@
 import os
 from dotenv import load_dotenv
+import logging
 
-load_dotenv()  # Load variables from .env file
+logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
+
+try:
+    load_dotenv()  # Load variables from .env file
+    logger.info("Environment variables loaded successfully.")
+except Exception as e:
+    logger.error(f"Error loading environment variables: {e}")
 
 ENVIRONMENT = os.getenv("ENVIRONMENT", "development")
 
