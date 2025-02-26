@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter(prefix="/borrowers", tags=["borrowers"])
 logger = logging.getLogger(__name__)
 
+
 @router.get("/")
 def read_borrowers():
     try:

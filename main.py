@@ -9,6 +9,7 @@ logging.basicConfig(level=logging.INFO)
 
 app = FastAPI()
 
+
 @app.on_event("startup")
 def on_startup():
     try:
@@ -19,7 +20,9 @@ def on_startup():
         # Depending on requirements, you might want to raise the exception to stop startup:
         # raise e
 
+
 app.include_router(auth_router)
+
 
 @app.get("/")
 def root():

@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter(prefix="/payments", tags=["payments"])
 logger = logging.getLogger(__name__)
 
+
 @router.get("/")
 def read_payments():
     try:

@@ -5,10 +5,13 @@ from config import SECRET_KEY, ALGORITHM
 
 logger = logging.getLogger(__name__)
 
+
 def create_access_token(data: dict, expires_delta: timedelta = None):
     try:
         to_encode = data.copy()
-        expire = datetime.utcnow() + (expires_delta if expires_delta else timedelta(minutes=15))
+        expire = datetime.utcnow() + (
+            expires_delta if expires_delta else timedelta(minutes=15)
+        )
         to_encode.update({"exp": expire})
         token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
         return token

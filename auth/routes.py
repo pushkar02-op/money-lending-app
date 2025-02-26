@@ -10,6 +10,7 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+
 @router.post("/register", response_model=Token)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
     try:
@@ -28,7 +29,9 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
-        access_token = create_access_token({"sub": new_user.email, "role": new_user.role})
+        access_token = create_access_token(
+            {"sub": new_user.email, "role": new_user.role}
+        )
         return {"access_token": access_token, "token_type": "bearer"}
     except HTTPException as he:
         raise he
@@ -36,6 +39,7 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         db.rollback()
         logger.error(f"Error during registration: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
 
 @router.post("/login", response_model=Token)
 def login(user_data: UserLogin, db: Session = Depends(get_db)):

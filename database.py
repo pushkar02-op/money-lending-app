@@ -1,7 +1,6 @@
 import re
 import logging
 from sqlalchemy import create_engine, text
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import DATABASE_URL, DATABASE_NAME
 
@@ -24,13 +23,12 @@ except Exception as e:
 try:
     engine = create_engine(DATABASE_URL)
     SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-    Base = declarative_base()
     logger.info("Database engine and session created successfully.")
 except Exception as e:
     logger.error(f"Error creating database engine or session: {e}")
     raise
 
-# Dependency to get database session
+
 def get_db():
     db = SessionLocal()
     try:

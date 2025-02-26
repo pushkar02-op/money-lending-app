@@ -4,6 +4,7 @@ from fastapi import APIRouter, HTTPException
 router = APIRouter(prefix="/users", tags=["users"])
 logger = logging.getLogger(__name__)
 
+
 @router.get("/")
 def read_users():
     try:
