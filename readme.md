@@ -5,7 +5,7 @@
 ### **1. Clone the Repository**
 
 ```sh
-git clone https://github.com/pushkar02-op/money-lending-app.git
+git clone https://github.com/YOUR_USERNAME/money-lending-app.git
 cd money-lending-app
 ```
 
@@ -26,26 +26,25 @@ pip install -r requirements.txt
 
 Create a `.env` file in the root directory and add:
 
-```dotenv
-DATABASE_URL=mysql+pymysql://admin:password@localhost/money_lending
+```
+ENVIRONMENT=development
 SECRET_KEY=your_secret_key
 ALGORITHM=HS256
 ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+DATABASE_NAME=money_lending
+DATABASE_USER=admin
+DATABASE_PASSWORD=password
+DATABASE_HOST=localhost
 ```
 
-### **5. Initialize Database**
-
-```sh
-python init_db.py
-```
-
-### **6. Run the Application**
+### **5. Run the Application**
 
 ```sh
 uvicorn main:app --reload
 ```
 
-### **7. Run Tests**
+### **6. Run Tests**
 
 ```sh
 pytest
@@ -67,7 +66,7 @@ This is a **Money Lending Web Application** where an **Admin** assigns **Agents*
 
 ### **Project Structure**
 
-```plaintext
+```
 money-lending-app/
 │── auth/            # Authentication module
 │── config/          # Configuration settings
@@ -96,7 +95,7 @@ money-lending-app/
 
 ---
 
-## 🔗 API Endpoints
+## 📚 API Endpoints (Planned)
 
 | Method | Endpoint         | Description              |
 | ------ | ---------------- | ------------------------ |
@@ -118,7 +117,7 @@ money-lending-app/
 
 ---
 
-## 🤝 Contributing
+## 🥝 Contributing
 
 1. Fork the repository.
 2. Create a new branch (`feature-branch`).
