@@ -7,19 +7,20 @@ from schemas.user import UserCreate, UserLogin, Token
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
+
 @router.post("/register", response_model=Token)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.email == user_data.email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    
+
     new_user = User(
         name=user_data.name,
         email=user_data.email,
         password_hash=get_password_hash(user_data.password),
-        role=user_data.role
+        role=user_data.role,
     )
-    
+
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -27,11 +28,12 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
     access_token = create_access_token({"sub": new_user.email, "role": new_user.role})
     return {"access_token": access_token, "token_type": "bearer"}
 
+
 @router.post("/login", response_model=Token)
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == user_data.email).first()
     if not user or not verify_password(user_data.password, user.password_hash):
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
+
     access_token = create_access_token({"sub": user.email, "role": user.role})
     return {"access_token": access_token, "token_type": "bearer"}
