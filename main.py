@@ -12,6 +12,7 @@ Base.metadata.create_all(bind=engine)
 # Include authentication routes
 app.include_router(auth_router)
 
+
 @app.get("/")
 def root():
     return {"message": "Money Lending App is running"}

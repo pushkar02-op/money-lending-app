@@ -2,6 +2,7 @@ from sqlalchemy import Column, Integer, Float, Date, ForeignKey, Enum
 from datetime import datetime
 from models.base import Base
 
+
 class Loan(Base):
     __tablename__ = "loans"
     id = Column(Integer, primary_key=True, index=True)

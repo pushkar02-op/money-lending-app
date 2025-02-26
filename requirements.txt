@@ -4,3 +4,7 @@ sqlalchemy
 pymysql
 python-jose
 bcrypt
+python-dotenv
+black
+flake8
+pytest
