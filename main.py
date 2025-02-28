@@ -39,6 +39,4 @@ app.include_router(loan_router)
 app.include_router(borrower_router)
 app.include_router(payment_router)
 
-@app.get("/")
-def root():
-    return {"message": "Money Lending App is running"}
+

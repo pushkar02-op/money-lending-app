@@ -1,6 +1,5 @@
-// src/components/DashboardLayout.js
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate, useLocation, Outlet } from "react-router-dom";
 import { AuthContext } from "../App";
 import {
   AppBar,
@@ -13,19 +12,29 @@ import {
   ListItemText,
   Box,
   CssBaseline,
+  IconButton,
+  Divider,
 } from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
 
 const drawerWidth = 240;
 
-const DashboardLayout = ({ role, children }) => {
+const DashboardLayout = ({ role }) => {
   const { setAuth } = React.useContext(AuthContext);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const handleDrawerToggle = () => {
+    setDrawerOpen(!drawerOpen);
+  };
 
   const handleLogout = () => {
-    setAuth({ token: null, role: null });
+    setAuth({ token: null, role: null, user_id: null });
     navigate("/login");
   };
 
+  // Updated menu items: For agents, add "Issue Loan" along with other options.
   const menuItems =
     role === "admin"
       ? [
@@ -35,20 +44,48 @@ const DashboardLayout = ({ role, children }) => {
       : [
           { text: "Overview", link: "/agent" },
           { text: "My Loans", link: "/agent/loans" },
+          { text: "Issue Loan", link: "/agent/new-loan" },
         ];
+
+  const drawer = (
+    <div>
+      <Toolbar />
+      <Divider />
+      <List>
+        {menuItems.map((item, index) => (
+          <ListItem
+            button
+            key={index}
+            component={Link}
+            to={item.link}
+            selected={
+              location.pathname === item.link ||
+              location.pathname.startsWith(item.link + "/")
+            }
+            onClick={() => setDrawerOpen(false)}
+          >
+            <ListItemText primary={item.text} />
+          </ListItem>
+        ))}
+      </List>
+    </div>
+  );
 
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{
-          width: `calc(100% - ${drawerWidth}px)`,
-          ml: `${drawerWidth}px`,
-        }}
-      >
+      <AppBar position="fixed" sx={{ width: "100%" }}>
         <Toolbar>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={handleDrawerToggle}
+            sx={{ mr: 2 }}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap sx={{ flexGrow: 1 }}>
             {role === "admin" ? "Admin Dashboard" : "Agent Dashboard"}
           </Typography>
           <Button color="inherit" onClick={handleLogout}>
@@ -57,30 +94,21 @@ const DashboardLayout = ({ role, children }) => {
         </Toolbar>
       </AppBar>
       <Drawer
-        variant="permanent"
+        variant="temporary"
+        open={drawerOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
         sx={{
-          width: drawerWidth,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: drawerWidth,
+          "& .MuiDrawer-paper": {
             boxSizing: "border-box",
+            width: drawerWidth,
           },
         }}
       >
-        <Toolbar />
-        <Box sx={{ overflow: "auto" }}>
-          <List>
-            {menuItems.map((item, index) => (
-              <ListItem button key={index} component={Link} to={item.link}>
-                <ListItemText primary={item.text} />
-              </ListItem>
-            ))}
-          </List>
-        </Box>
+        {drawer}
       </Drawer>
-      <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
-        <Toolbar />
-        {children}
+      <Box component="main" sx={{ flexGrow: 1, p: 3, mt: 8 }}>
+        <Outlet />
       </Box>
     </Box>
   );

@@ -10,7 +10,6 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 
-
 @router.post("/register", response_model=Token)
 def register(user_data: UserCreate, db: Session = Depends(get_db)):
     try:
@@ -29,9 +28,11 @@ def register(user_data: UserCreate, db: Session = Depends(get_db)):
         db.commit()
         db.refresh(new_user)
 
-        access_token = create_access_token(
-            {"sub": new_user.email, "role": new_user.role}
-        )
+        access_token = create_access_token({
+            "sub": new_user.email, 
+            "role": new_user.role,
+            "user_id": new_user.id  # Include user_id in token payload
+        })
         return {"access_token": access_token, "token_type": "bearer"}
     except HTTPException as he:
         raise he
@@ -48,7 +49,11 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
         if not user or not verify_password(user_data.password, user.password_hash):
             raise HTTPException(status_code=401, detail="Invalid credentials")
 
-        access_token = create_access_token({"sub": user.email, "role": user.role})
+        access_token = create_access_token({
+            "sub": user.email, 
+            "role": user.role,
+            "user_id": user.id  # Include user_id in token payload
+        })
         return {"access_token": access_token, "token_type": "bearer"}
     except HTTPException as he:
         raise he

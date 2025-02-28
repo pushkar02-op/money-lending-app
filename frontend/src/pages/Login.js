@@ -33,10 +33,10 @@ function Login() {
         return;
       }
       const data = await response.json();
-      // Decode JWT token payload to extract role
       const payload = JSON.parse(atob(data.access_token.split(".")[1]));
       const role = payload.role;
-      setAuth({ token: data.access_token, role });
+      const user_id = payload.user_id;
+      setAuth({ token: data.access_token, role, user_id });
       navigate(role === "admin" ? "/admin" : "/agent");
     } catch (error) {
       setError("Login failed");
