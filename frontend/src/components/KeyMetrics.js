@@ -12,20 +12,14 @@ import {
 
 const COLORS = ["#0088FE", "#00C49F"];
 
-const KeyMetrics = ({ loans }) => {
-  const totalLoans = loans.length;
-  const totalAmountLent = loans.reduce(
-    (acc, loan) => acc + (loan.amount || 0),
-    0
-  );
-  const activeLoans = loans.filter((loan) => loan.status === "active").length;
-  const completedLoans = loans.filter(
-    (loan) => loan.status === "completed"
-  ).length;
+const KeyMetrics = ({ metrics }) => {
+  if (!metrics) return null;
 
+  const { total_loans, total_amount_lent, active_loans, completed_loans } =
+    metrics;
   const pieData = [
-    { name: "Active", value: activeLoans },
-    { name: "Completed", value: completedLoans },
+    { name: "Active", value: active_loans },
+    { name: "Completed", value: completed_loans },
   ];
 
   return (
@@ -34,7 +28,7 @@ const KeyMetrics = ({ loans }) => {
         <Card>
           <CardContent>
             <Typography variant="subtitle1">Total Loans</Typography>
-            <Typography variant="h4">{totalLoans}</Typography>
+            <Typography variant="h4">{total_loans}</Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -42,7 +36,9 @@ const KeyMetrics = ({ loans }) => {
         <Card>
           <CardContent>
             <Typography variant="subtitle1">Total Amount Lent</Typography>
-            <Typography variant="h4">₹ {totalAmountLent.toFixed(2)}</Typography>
+            <Typography variant="h4">
+              ₹ {total_amount_lent.toFixed(2)}
+            </Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -50,7 +46,7 @@ const KeyMetrics = ({ loans }) => {
         <Card>
           <CardContent>
             <Typography variant="subtitle1">Active Loans</Typography>
-            <Typography variant="h4">{activeLoans}</Typography>
+            <Typography variant="h4">{active_loans}</Typography>
           </CardContent>
         </Card>
       </Grid>
@@ -58,7 +54,7 @@ const KeyMetrics = ({ loans }) => {
         <Card>
           <CardContent>
             <Typography variant="subtitle1">Completed Loans</Typography>
-            <Typography variant="h4">{completedLoans}</Typography>
+            <Typography variant="h4">{completed_loans}</Typography>
           </CardContent>
         </Card>
       </Grid>
