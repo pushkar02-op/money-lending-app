@@ -1,5 +1,5 @@
 // src/components/LoansTable.js
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Paper,
   Typography,
@@ -29,7 +29,8 @@ const LoansTable = ({ onRefreshMetrics }) => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [filterStatus, setFilterStatus] = useState("All");
 
-  const fetchLoans = async () => {
+  // Wrap fetchLoans in useCallback so that it's memoized
+  const fetchLoans = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
@@ -53,12 +54,11 @@ const LoansTable = ({ onRefreshMetrics }) => {
       setError("Error fetching loans");
     }
     setLoading(false);
-  };
+  }, [page, rowsPerPage, filterStatus]);
 
-  // Re-fetch loans when pagination or filter changes
   useEffect(() => {
     fetchLoans();
-  }, [page, rowsPerPage, filterStatus]);
+  }, [fetchLoans]);
 
   const handleRefresh = () => {
     fetchLoans();
