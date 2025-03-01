@@ -15,7 +15,6 @@ from datetime import datetime
 from sqlalchemy import func
 from database import get_db
 from models.loan import Loan
-from models.payment import Payment
 from models.user import User
 from models.borrower import Borrower
 from schemas.loan import LoanOut, LoanIssue
@@ -124,7 +123,7 @@ def loan_metrics(db: Session = Depends(get_db)):
         }
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error generating metrics: {e}")
-
+    
 @router.post("/issue", dependencies=[Depends(require_role("agent"))])
 def issue_loan(
     loan_data: LoanIssue,
@@ -155,7 +154,7 @@ def issue_loan(
         interest_rate=loan_data.interest_rate,
         repayment_method=loan_data.repayment_method,
         payment_frequency=loan_data.payment_frequency,
-        loan_date=datetime.utcnow(),
+        loan_date=loan_data.loan_date if loan_data.loan_date else datetime.utcnow(),
         status="active"
     )
     db.add(new_loan)

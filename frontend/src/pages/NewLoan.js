@@ -26,13 +26,15 @@ function NewLoan() {
   const [interestRate, setInterestRate] = useState("");
   const [repaymentMethod, setRepaymentMethod] = useState("full");
   const [paymentFrequency, setPaymentFrequency] = useState("");
+  const [loanDate, setLoanDate] = useState(
+    new Date().toISOString().slice(0, 10)
+  ); // New state for date picker
   const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
 
-    // Basic validation
     if (!borrowerName || !amount || !interestRate) {
       setError("Please fill in all required fields.");
       return;
@@ -53,13 +55,13 @@ function NewLoan() {
           repayment_method: repaymentMethod,
           payment_frequency:
             repaymentMethod === "interest" ? paymentFrequency : null,
-          agent_id: auth.user_id, // Use user_id from auth context
+          agent_id: auth.user_id,
+          loan_date: loanDate, // Pass the selected loan date
         }),
       });
 
       if (!response.ok) {
         const errData = await response.json();
-        // Convert error detail to a string if it's an object
         setError(
           typeof errData.detail === "object"
             ? JSON.stringify(errData.detail)
@@ -70,7 +72,7 @@ function NewLoan() {
 
       const data = await response.json();
       alert(data.message || "Loan issued successfully!");
-      navigate("/agent"); // Redirect back to the agent dashboard
+      navigate("/agent");
     } catch (err) {
       console.error("Error creating loan:", err);
       setError("Error creating loan");
@@ -126,6 +128,20 @@ function NewLoan() {
             onChange={(e) => setInterestRate(e.target.value)}
           />
 
+          {/* New Date Picker Field */}
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            label="Loan Date"
+            type="date"
+            value={loanDate}
+            onChange={(e) => setLoanDate(e.target.value)}
+            InputLabelProps={{
+              shrink: true,
+            }}
+          />
+
           {/* Repayment Method */}
           <FormControl fullWidth margin="normal">
             <InputLabel>Repayment Method</InputLabel>
@@ -139,7 +155,7 @@ function NewLoan() {
             </Select>
           </FormControl>
 
-          {/* Payment Frequency (only if repayment is interest) */}
+          {/* Payment Frequency (if repayment is interest) */}
           {repaymentMethod === "interest" && (
             <FormControl fullWidth margin="normal">
               <InputLabel>Payment Frequency</InputLabel>

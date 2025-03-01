@@ -1,8 +1,8 @@
+# schemas/loan.py
 from pydantic import BaseModel
 from datetime import date
 from enum import Enum
 from typing import Optional
-
 
 class LoanRepaymentMethod(str, Enum):
     full = "full"
@@ -20,15 +20,15 @@ class LoanOut(BaseModel):
     loan_date: date
     interest_rate: float
     repayment_method: LoanRepaymentMethod
-    payment_frequency: PaymentFrequency | None = None
+    payment_frequency: Optional[PaymentFrequency] = None
     status: str
     remaining_balance: float
-    agent_name: str | None = None
-    borrower_name: str | None = None
+    agent_name: Optional[str] = None
+    borrower_name: Optional[str] = None
 
     class Config:
         from_attributes = True
-        
+
 class LoanIssue(BaseModel):
     borrower_name: str
     borrower_contact: Optional[str] = None
@@ -37,3 +37,4 @@ class LoanIssue(BaseModel):
     repayment_method: LoanRepaymentMethod
     payment_frequency: Optional[PaymentFrequency] = None
     agent_id: int  # The agent issuing the loan
+    loan_date: Optional[date] = None  # New optional field for loan date
